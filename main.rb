@@ -1,3 +1,5 @@
+require 'io/console'
+
 class Janken
   def initialize
     @results = {}
@@ -6,23 +8,33 @@ class Janken
 
   def start
     puts "何本勝負？(press 1 or 3 or 5)"
-    @number = gets.chomp 
-    puts "#{@number}本勝負を選びました"
+    @number = STDIN.noecho(&:gets).chomp
+    if @number.match(/[135]/) 
+      puts "#{@number}本勝負を選びました"
+    else 
+      start
+      return
+    end
     main
   end
 
   def main
-    @number.to_i.times.with_index do |n, i|  
+    @number.to_i.times do |i|  
       puts "\n"
       puts "#{i+1}本目"
-      puts "じゃんけん...(press g or c or p)"
-      play
+      # puts "じゃんけん...(press g or c or p)"
+      # player = STDIN.noecho(&:gets).chomp 
+      player = ''
+      until player.match(/[cgp]/)
+        puts "じゃんけん...(press g or c or p)"
+        player = STDIN.noecho(&:gets).chomp 
+      end
+      play(player)
     end
     show_result
   end
 
-  def play
-    player = gets.chomp
+  def play(player)
     cpu = ['g', 'c', 'p'].sample
     janken = {'g' => 'グー', 'p' => 'パー', 'c' => 'チョキ'}
     puts "CPU...#{janken[cpu]}"
@@ -32,17 +44,21 @@ class Janken
 
   def judge(cpu, player)
     if cpu == player
-      puts 'あいこで...(press g or c or p)'
-      play
+      player = ''
+      until player.match(/[cgp]/)
+        puts "あいこで...(press g or c or p)"
+        player = STDIN.noecho(&:gets).chomp 
+      end
+      play(player)
+      return 
     elsif cpu == 'p' && player == 'g' || cpu == 'g' && player == 'c' || cpu == 'c' && player == 'p'
       @results[:lose] += 1
       puts '負け！'
-      puts "#{@results[:win]}勝#{@results[:lose]}敗"
     else
       @results[:win] += 1
       puts '勝ち！'
-      puts "#{@results[:win]}勝#{@results[:lose]}敗"
     end
+    puts "#{@results[:win]}勝#{@results[:lose]}敗"
   end
   
   def show_result
@@ -56,6 +72,6 @@ class Janken
     puts "#{@results[:win]}勝#{@results[:lose]}敗であなたの#{result}"
   end
 end
-    
+
 janken = Janken.new
 janken.start
