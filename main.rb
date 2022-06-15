@@ -1,3 +1,5 @@
+require 'io/console'
+
 class Janken
   def initialize
     @results = {}
@@ -6,7 +8,7 @@ class Janken
 
   def start
     puts "何本勝負？(press 1 or 3 or 5)"
-    @number = gets.chomp 
+    @number = STDIN.noecho(&:gets).chomp 
     puts "#{@number}本勝負を選びました"
     main
   end
@@ -22,7 +24,7 @@ class Janken
   end
 
   def play
-    player = gets.chomp
+    player = STDIN.noecho(&:gets).chomp 
     cpu = ['g', 'c', 'p'].sample
     janken = {'g' => 'グー', 'p' => 'パー', 'c' => 'チョキ'}
     puts "CPU...#{janken[cpu]}"
@@ -56,6 +58,6 @@ class Janken
     puts "#{@results[:win]}勝#{@results[:lose]}敗であなたの#{result}"
   end
 end
-    
+
 janken = Janken.new
 janken.start
