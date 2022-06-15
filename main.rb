@@ -14,7 +14,7 @@ class Janken
   end
 
   def main
-    @number.to_i.times.with_index do |n, i|  
+    @number.to_i.times do |i|  
       puts "\n"
       puts "#{i+1}本目"
       puts "じゃんけん...(press g or c or p)"
@@ -36,15 +36,15 @@ class Janken
     if cpu == player
       puts 'あいこで...(press g or c or p)'
       play
+      return 
     elsif cpu == 'p' && player == 'g' || cpu == 'g' && player == 'c' || cpu == 'c' && player == 'p'
       @results[:lose] += 1
       puts '負け！'
-      puts "#{@results[:win]}勝#{@results[:lose]}敗"
     else
       @results[:win] += 1
       puts '勝ち！'
-      puts "#{@results[:win]}勝#{@results[:lose]}敗"
     end
+    puts "#{@results[:win]}勝#{@results[:lose]}敗"
   end
   
   def show_result
